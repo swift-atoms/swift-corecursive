@@ -1,4 +1,4 @@
-import Corecursive_Derivation
+import Corecursive_Macro
 import Testing
 
 @Corecursive

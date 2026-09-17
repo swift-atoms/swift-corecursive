@@ -4,40 +4,40 @@ import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
-    name: "swift-corecursive-derivation",
+    name: "swift-corecursive",
     products: [
-        .library(name: "Corecursive Derivation", targets: ["Corecursive Derivation"]),
-        .library(name: "Corecursive Derivation Core", targets: ["Corecursive Derivation Core"]),
+        .library(name: "Corecursive Macro", targets: ["Corecursive Macro"]),
+        .library(name: "Corecursive Macro Core", targets: ["Corecursive Macro Core"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-molecules/swift-base-functor-derivation.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-base-functor.git", branch: "main"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "603.0.2"..<"604.0.0"),
     ],
     targets: [
         .target(
-            name: "Corecursive Derivation Core",
+            name: "Corecursive Macro Core",
             dependencies: [
-                .product(name: "Base Functor Derivation Core", package: "swift-base-functor-derivation"),
+                .product(name: "Base Functor Macro Core", package: "swift-base-functor"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
             ]
         ),
         .macro(
-            name: "Corecursive Derivation Macros",
+            name: "Corecursive Macro Plugin",
             dependencies: [
-                "Corecursive Derivation Core",
+                "Corecursive Macro Core",
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
             ]
         ),
         .target(
-            name: "Corecursive Derivation",
-            dependencies: ["Corecursive Derivation Macros"]
+            name: "Corecursive Macro",
+            dependencies: ["Corecursive Macro Plugin"]
         ),
         .testTarget(
-            name: "Corecursive Derivation Tests",
-            dependencies: ["Corecursive Derivation"]
+            name: "Corecursive Macro Tests",
+            dependencies: ["Corecursive Macro"]
         ),
     ],
     swiftLanguageModes: [.v6]

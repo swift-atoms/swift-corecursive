@@ -1,5 +1,5 @@
 @attached(member, names: arbitrary)
 public macro Corecursive() = #externalMacro(
-    module: "Corecursive_Derivation_Macros",
+    module: "Corecursive_Macro_Plugin",
     type: "Macro"
 )
