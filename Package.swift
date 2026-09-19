@@ -5,11 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "swift-corecursive",
+    platforms: [.macOS(.v27), .iOS(.v27), .tvOS(.v27), .watchOS(.v27), .visionOS(.v27)],
     products: [
         .library(name: "Corecursive Macro", targets: ["Corecursive Macro"]),
-        .library(name: "Corecursive Macro Core", targets: ["Corecursive Macro Core"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-algebra.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-functor.git", branch: "main"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "603.0.2"..<"604.0.0"),
     ],
@@ -17,7 +18,7 @@ let package = Package(
         .target(
             name: "Corecursive Macro Core",
             dependencies: [
-                .product(name: "Functor Base Macro Core", package: "swift-functor"),
+                .product(name: "Type Algebra Syntax", package: "swift-algebra"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
             ]
@@ -37,7 +38,8 @@ let package = Package(
         ),
         .testTarget(
             name: "Corecursive Macro Tests",
-            dependencies: ["Corecursive Macro"]
+            dependencies: [
+                .product(name: "Functor Base Macro", package: "swift-functor"),"Corecursive Macro"]
         ),
     ],
     swiftLanguageModes: [.v6]
@@ -56,4 +58,9 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
     let package: [SwiftSetting] = []
 
     target.swiftSettings = (target.swiftSettings ?? []) + ecosystem + package
+}
+
+// Consumer compilation must reject visibility regressions, even when other packages suppress warnings.
+for target in package.targets where target.type == .test || target.name.hasSuffix("Consumer Fixtures") {
+    target.swiftSettings = (target.swiftSettings ?? []) + [.treatAllWarnings(as: .error)]
 }

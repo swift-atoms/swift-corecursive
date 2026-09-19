@@ -1,6 +1,8 @@
+import Functor_Base_Macro
 import Corecursive_Macro
 import Testing
 
+@FunctorBase
 @Corecursive
 private indirect enum Natural {
     case zero
