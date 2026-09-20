@@ -4,16 +4,16 @@ import SwiftSyntaxBuilder
 
 public enum Derivation {
     public static func expansion(of declaration: EnumDeclSyntax) -> [DeclSyntax] {
-        do { try RecursiveShape.validate(declaration) } catch {
+        do { try Type.Syntax.Recursion.validate(declaration) } catch {
             return [DeclSyntax(stringLiteral: "#error(\(String(reflecting: String(describing: error))))")]
         }
-        let access = RecursiveShape.access(of: declaration)
-        let branches = RecursiveShape.elements(of: declaration).map { element in
-            let parameters = RecursiveShape.parameters(of: element)
+        let access = Type.Syntax.Recursion.access(of: declaration)
+        let branches = Type.Syntax.Recursion.elements(of: declaration).map { element in
+            let parameters = Type.Syntax.Recursion.parameters(of: element)
             guard !parameters.isEmpty else {
                 return "case .\(element.name.text): return .\(element.name.text)"
             }
-            return "case let .\(element.name.text)(\(RecursiveShape.pattern(of: parameters))): return .\(element.name.text)(\(RecursiveShape.arguments(of: parameters)))"
+            return "case let .\(element.name.text)(\(Type.Syntax.Recursion.pattern(of: parameters))): return .\(element.name.text)(\(Type.Syntax.Recursion.arguments(of: parameters)))"
         }.joined(separator: "\n")
 
         return ["""
