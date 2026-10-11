@@ -26,7 +26,7 @@ let package = Package(
         .macro(
             name: "Corecursive Macro Plugin",
             dependencies: [
-                "Corecursive Macro Core",
+                .target(name: "Corecursive Macro Core"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
@@ -34,33 +34,26 @@ let package = Package(
         ),
         .target(
             name: "Corecursive Macro",
-            dependencies: ["Corecursive Macro Plugin"]
+            dependencies: [.target(name: "Corecursive Macro Plugin")]
         ),
         .testTarget(
             name: "Corecursive Macro Tests",
             dependencies: [
-                .product(name: "Functor Base Macro", package: "swift-functor"),"Corecursive Macro"]
+                .product(name: "Functor Base Macro", package: "swift-functor"),.target(name: "Corecursive Macro")]
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
 for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    let ecosystem: [SwiftSetting] = [
+    target.swiftSettings = (target.swiftSettings ?? []) + [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
         .enableUpcomingFeature("MemberImportVisibility"),
         .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-        .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
+        .enableExperimentalFeature("Lifetimes"),
+        .treatAllWarnings(as: .error),
     ]
-    let package: [SwiftSetting] = []
-
-    target.swiftSettings = (target.swiftSettings ?? []) + ecosystem + package
-}
-
-// Consumer compilation must reject visibility regressions, even when other packages suppress warnings.
-for target in package.targets where target.type == .test || target.name.hasSuffix("Consumer Fixtures") {
-    target.swiftSettings = (target.swiftSettings ?? []) + [.treatAllWarnings(as: .error)]
 }
