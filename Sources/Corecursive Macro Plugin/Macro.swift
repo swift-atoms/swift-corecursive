@@ -1,6 +1,6 @@
+import Corecursive_Macro_Core
 import SwiftSyntax
 import SwiftSyntaxMacros
-import Corecursive_Macro_Core
 
 public struct Macro: MemberMacro {}
 

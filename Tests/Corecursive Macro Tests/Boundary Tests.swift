@@ -1,5 +1,5 @@
-import Functor_Base_Macro
 import Corecursive_Macro
+import Functor_Base_Macro
 import Testing
 
 @FunctorBase
